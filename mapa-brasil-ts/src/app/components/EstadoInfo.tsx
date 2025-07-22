@@ -1,0 +1,1 @@
+// Componente com nome, sigla, capital e região 
