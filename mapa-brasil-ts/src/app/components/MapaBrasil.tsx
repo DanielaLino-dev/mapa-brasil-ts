@@ -2,6 +2,8 @@
 
 import React, { ReactNode } from "react";
 
+//Interface dos parametros a serem recebidos. A função que retorna os dados das cidades e estados,
+//  e os paths dos estados do svg
 interface MapaProps {
     onEstadoClick: (estadoId: string) => void;
     children: ReactNode;
@@ -18,6 +20,7 @@ const MapaBrasil = ({ onEstadoClick, children }: MapaProps) => {
 
     return (
         <svg
+            className="mapa-brasil fill-[#002776] w-fit "
             onClick={handleClick}
             xmlns="http://www.w3.org/2000/svg"
             width="612.51611"

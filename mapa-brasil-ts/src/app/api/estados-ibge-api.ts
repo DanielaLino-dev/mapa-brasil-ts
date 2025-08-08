@@ -5,31 +5,30 @@ import type { NextApiRequest, NextApiResponse } from "next";
 //URL da API do IBGE
 const baseUrl = 'https://servicodados.ibge.gov.br/api/v1/localidades/estados';
 
+
+export interface IBGECidade { 
+  id: number; 
+  nome: string
+ }
+
 //Interface para tipagem das propriedades passadas para o api
-interface ufProps{
-  uf:string;
+export interface IUfProps {
+  uf: string;
 }
 
 // Função exportada como handler da API, será executada quando a rota for acessada
-const getCidades = async ({uf}: ufProps): Promise<[]|void> => {
+export const getCidades = async ({ uf }: IUfProps): Promise<IBGECidade[]> => {
+  if (!uf) throw new Error("UF é obrigatória");
 
-  const res = await fetch(`${baseUrl}/${uf}/municipios`, {cache:'no-cache'})
+  const res = await fetch(`${baseUrl}/${uf}/municipios`, { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`IBGE retornou status ${res.status}`);
 
-  if (!uf) {
-    // return res.status(400).json({ error: "UF é obrigatória na query." });
-  }
-
-
-  try {
-    //Faz a requisição para a API do IBGE usando a URL criada
-    const data = await res.json();
-
-    //Retorna os dados com sucesso
-    res.statusText
-    console.log(res.status, data)
-  } catch (error) {
-    //Em caso de erro na requisição
-    // res.status(500).json({ error: "Erro ao buscar as cidades dessa UF." });
-  }
-}
-
+  const data = await res.json();
+  if (!Array.isArray(data)) throw new Error("Resposta inesperada da API");
+  return data as IBGECidade[];
+};
+export const getEstados = async ({ uf }: IUfProps): Promise<[] | void> => {
+  const res = await fetch(`${baseUrl}/${uf}/municipios`, { cache: 'no-cache' });
+  const data = await res.json();
+  return data;
+};
